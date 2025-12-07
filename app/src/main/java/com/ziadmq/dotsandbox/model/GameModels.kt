@@ -21,7 +21,12 @@ enum class LineOrientation {
 
 enum class Player {
     PLAYER1,
-    AI
+    PLAYER2
+}
+
+enum class GameMode {
+    PvE, // Player vs AI
+    PvP  // Player vs Player
 }
 
 data class GameState(
@@ -32,3 +37,9 @@ data class GameState(
     val scorePlayer1: Int = 0,
     val scorePlayer2: Int = 0
 )
+// --- NEW: Sound Event ---
+enum class SoundType {
+    MOVE,
+    SCORE,
+    WIN
+}
