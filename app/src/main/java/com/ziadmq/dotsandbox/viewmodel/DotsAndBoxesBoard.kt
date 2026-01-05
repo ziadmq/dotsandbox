@@ -1,24 +1,63 @@
 package com.ziadmq.dotsandbox.viewmodel
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.ziadmq.dotsandbox.model.*
 import com.ziadmq.dotsandbox.ui.theme.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
+
+// لون التجميد الجليدي
+val FrozenColor = Color(0xFF80D8FF)
+
+@Composable
+fun NeonBurst(active: Boolean, color: Color) {
+    if (!active) return
+    val transition = rememberInfiniteTransition(label = "particles")
+    val sizePx by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 40f,
+        animationSpec = infiniteRepeatable(animation = tween(600, easing = LinearOutSlowInEasing)),
+        label = "size"
+    )
+    val alpha by transition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(animation = tween(600)),
+        label = "alpha"
+    )
+
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val center = Offset(size.width / 2, size.height / 2)
+        for (i in 0..7) {
+            val angle = (i * 45).toDouble()
+            val x = center.x + sizePx * Math.cos(Math.toRadians(angle)).toFloat()
+            val y = center.y + sizePx * Math.sin(Math.toRadians(angle)).toFloat()
+            drawCircle(color = color.copy(alpha = alpha), radius = 4f, center = Offset(x, y))
+        }
+    }
+}
 
 @Composable
 fun DotsAndBoxesBoard(
@@ -26,28 +65,23 @@ fun DotsAndBoxesBoard(
     onLineClicked: (Line) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // 1. Dynamic Sizing
     val dotSize = 16.dp
     val lineThickness = 10.dp
     val spacing = if (state.gridSize > 4) 50.dp else 65.dp
-
     val density = LocalDensity.current
     val spacingPx = with(density) { spacing.toPx() }
     val dotRadiusPx = with(density) { (dotSize / 2).toPx() }
     val lineThickPx = with(density) { lineThickness.toPx() }
+    val haptic = LocalHapticFeedback.current
 
-    // Board Dimensions
-    val boardSize = spacing * (state.gridSize - 1) + dotSize
-
-    // 2. Interaction State
     var dragStartOffset by remember { mutableStateOf<Offset?>(null) }
     var dragCurrentOffset by remember { mutableStateOf<Offset?>(null) }
     var potentialLine by remember { mutableStateOf<Line?>(null) }
 
     Box(
         modifier = modifier
-            .size(boardSize)
-            .pointerInput(Unit) {
+            .size(spacing * (state.gridSize - 1) + dotSize)
+            .pointerInput(state.frozenLine) {
                 detectDragGestures(
                     onDragStart = { offset ->
                         dragStartOffset = offset
@@ -56,20 +90,28 @@ fun DotsAndBoxesBoard(
                     onDrag = { change, _ ->
                         change.consume()
                         dragCurrentOffset = change.position
-
-                        // Calculate potential snap
                         dragStartOffset?.let { start ->
                             val startCol = (start.x / spacingPx).roundToInt()
                             val startRow = (start.y / spacingPx).roundToInt()
                             val endCol = (change.position.x / spacingPx).roundToInt()
                             val endRow = (change.position.y / spacingPx).roundToInt()
 
-                            potentialLine = findValidLine(startRow, startCol, endRow, endCol, state)
+                            val line = findValidLine(startRow, startCol, endRow, endCol, state)
+
+                            // منع اختيار الخط إذا كان مجمداً للخصم
+                            val isFrozen = state.frozenLine?.let { fl ->
+                                line?.row == fl.row && line?.col == fl.col && line?.orientation == fl.orientation && state.currentPlayer != state.frozenByPlayer
+                            } ?: false
+
+                            potentialLine = if (isFrozen) null else line
                         }
                     },
                     onDragEnd = {
                         potentialLine?.let {
-                            if (!it.isSelected) onLineClicked(it)
+                            if (!it.isSelected) {
+                                onLineClicked(it)
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            }
                         }
                         dragStartOffset = null
                         dragCurrentOffset = null
@@ -83,58 +125,52 @@ fun DotsAndBoxesBoard(
                 )
             }
     ) {
-        // --- LAYER 1: The Grid & Completed Lines ---
+        // --- LAYER 1: Grid & Lines & Boxes ---
         for (row in 0 until state.gridSize) {
             for (col in 0 until state.gridSize) {
                 val xOffset = spacing * col
                 val yOffset = spacing * row
 
-                // Horizontal Line
                 if (col < state.gridSize - 1) {
                     val line = state.lines.first { it.row == row && it.col == col && it.orientation == LineOrientation.HORIZONTAL }
+                    val isFrozen = state.frozenLine == line && state.currentPlayer != state.frozenByPlayer
                     LineItem(
-                        line = line,
-                        modifier = Modifier
-                            .offset(x = xOffset + dotSize/2, y = yOffset + (dotSize - lineThickness)/2)
-                            .width(spacing)
-                            .height(lineThickness)
+                        line,
+                        Modifier.offset(xOffset + dotSize/2, yOffset + (dotSize - lineThickness)/2).width(spacing).height(lineThickness),
+                        isFrozen
                     )
                 }
 
-                // Vertical Line
                 if (row < state.gridSize - 1) {
                     val line = state.lines.first { it.row == row && it.col == col && it.orientation == LineOrientation.VERTICAL }
+                    val isFrozen = state.frozenLine == line && state.currentPlayer != state.frozenByPlayer
                     LineItem(
-                        line = line,
-                        modifier = Modifier
-                            .offset(x = xOffset + (dotSize - lineThickness)/2, y = yOffset + dotSize/2)
-                            .width(lineThickness)
-                            .height(spacing)
+                        line,
+                        Modifier.offset(xOffset + (dotSize - lineThickness)/2, yOffset + dotSize/2).width(lineThickness).height(spacing),
+                        isFrozen
                     )
                 }
 
-                // Boxes
                 if (row < state.gridSize - 1 && col < state.gridSize - 1) {
                     val box = state.boxes.first { it.row == row && it.col == col }
-                    if (box.owner != null) {
-                        BoxItem(
-                            owner = box.owner,
-                            modifier = Modifier
-                                .offset(x = xOffset + dotSize, y = yOffset + dotSize)
-                                .size(spacing - dotSize)
-                        )
+                    Box(
+                        Modifier.offset(xOffset + dotSize, yOffset + dotSize).size(spacing - dotSize),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (box.owner != null) {
+                            NeonBurst(active = true, color = if(box.owner == Player.PLAYER1) Player1Color else Player2Color)
+                            BoxItem(box.owner, Modifier.fillMaxSize())
+                        }
                     }
                 }
             }
         }
 
-        // --- LAYER 2: The Dots (Rendered on top) ---
+        // --- LAYER 2: Dots ---
         for (row in 0 until state.gridSize) {
             for (col in 0 until state.gridSize) {
                 val xOffset = spacing * col
                 val yOffset = spacing * row
-
-                // Highlight dot if it's the start of a drag
                 val isDragStart = dragStartOffset?.let {
                     (it.x / spacingPx).roundToInt() == col && (it.y / spacingPx).roundToInt() == row
                 } ?: false
@@ -149,12 +185,10 @@ fun DotsAndBoxesBoard(
             }
         }
 
-        // --- LAYER 3: Interactive Drag Preview ---
+        // --- LAYER 3: Interactive Canvas ---
         Canvas(modifier = Modifier.fillMaxSize()) {
-            // Draw line from start dot to finger
             val start = dragStartOffset
             val current = dragCurrentOffset
-
             if (start != null && current != null && potentialLine == null) {
                 drawLine(
                     color = Color.White.copy(alpha = 0.5f),
@@ -165,7 +199,6 @@ fun DotsAndBoxesBoard(
                 )
             }
 
-            // Draw "Snap" Preview Line if a valid connection is found
             potentialLine?.let { line ->
                 val startX = line.col * spacingPx + dotRadiusPx
                 val startY = line.row * spacingPx + dotRadiusPx
@@ -184,6 +217,7 @@ fun DotsAndBoxesBoard(
     }
 }
 
+// هذه هي الدالة التي كانت مفقودة وتسببت في الخطأ
 fun findValidLine(r1: Int, c1: Int, r2: Int, c2: Int, state: GameState): Line? {
     if (r1 == r2 && abs(c1 - c2) == 1) {
         val col = minOf(c1, c2)
@@ -196,19 +230,23 @@ fun findValidLine(r1: Int, c1: Int, r2: Int, c2: Int, state: GameState): Line? {
 }
 
 @Composable
-fun LineItem(line: Line, modifier: Modifier) {
-    val alpha = if (line.isSelected) 1f else 0.2f
-    val color = when {
-        line.isSelected && line.owner == Player.PLAYER1 -> Player1Color
-        line.isSelected && line.owner == Player.PLAYER2 -> Player2Color
-        else -> UnselectedLineColor
-    }
+fun LineItem(line: Line, modifier: Modifier, isFrozen: Boolean = false) {
+    val animatedColor by animateColorAsState(
+        targetValue = when {
+            isFrozen -> FrozenColor
+            line.isSelected && line.owner == Player.PLAYER1 -> Player1Color
+            line.isSelected && line.owner == Player.PLAYER2 -> Player2Color
+            else -> Color.White.copy(0.05f)
+        },
+        animationSpec = tween(400)
+    )
 
     Box(
         modifier = modifier
             .padding(2.dp)
-            .clip(RoundedCornerShape(50))
-            .background(color.copy(alpha = alpha))
+            .clip(RoundedCornerShape(4.dp))
+            .background(animatedColor)
+            .then(if (isFrozen) Modifier.border(1.dp, Color.White, RoundedCornerShape(4.dp)) else Modifier)
     )
 }
 

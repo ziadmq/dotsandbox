@@ -19,4 +19,16 @@
     <string name="p2_wins">PLAYER 2 WINS!</string>
     <string name="ai_wins">AI WINS!</string>
     <string name="draw">DRAW!</string>
+    <string name="operation_system">Operation System</string>
+    <string name="classic">Classic</string>
+    <string name="hacker">Hacker</string>
+    <string name="emp_name">EMP</string>
+    <string name="emp_hint">WIPE</string>
+    <string name="hack_name">HACK</string>
+    <string name="hack_hint">STEAL</string>
+    <string name="freeze_name">FREEZE</string>
+    <string name="freeze_hint">LOCK</string>
+    <string name="hacker_active">HACKING PROTOCOL ACTIVE</string>
+    <string name="classic_mode">CLASSIC MODE</string>
+    <string name="abort_game">ABORT</string>
 </resources>

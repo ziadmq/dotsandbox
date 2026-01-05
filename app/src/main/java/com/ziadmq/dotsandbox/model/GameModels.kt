@@ -14,19 +14,21 @@ data class Box(
     val owner: Player? = null
 )
 
-enum class LineOrientation {
-    HORIZONTAL,
-    VERTICAL
-}
+enum class LineOrientation { HORIZONTAL, VERTICAL }
 
-enum class Player {
-    PLAYER1,
-    PLAYER2
-}
+enum class Player { PLAYER1, PLAYER2 }
 
+// إضافة أنماط الهاكر الجديدة
 enum class GameMode {
-    PvE, // Player vs AI
-    PvP  // Player vs Player
+    PvE, PvP,
+    HACKER_PvE, HACKER_PvP
+}
+
+// تعريف ميزات الهاكر
+enum class PowerUpType {
+    EMP,            // مسح آخر خط
+    THE_HACK,       // سرقة مربع
+    SYSTEM_FREEZE   // تجميد منطقة
 }
 
 data class GameState(
@@ -35,11 +37,12 @@ data class GameState(
     val lines: List<Line> = emptyList(),
     val boxes: List<Box> = emptyList(),
     val scorePlayer1: Int = 0,
-    val scorePlayer2: Int = 0
+    val scorePlayer2: Int = 0,
+    val p1PowerUps: Set<PowerUpType> = emptySet(),
+    val p2PowerUps: Set<PowerUpType> = emptySet(),
+    val lastLineDrawn: Line? = null,
+    val frozenLine: Line? = null,
+    val frozenByPlayer: Player? = null
 )
-// --- NEW: Sound Event ---
-enum class SoundType {
-    MOVE,
-    SCORE,
-    WIN
-}
+
+enum class SoundType { MOVE, SCORE, WIN, HACK }

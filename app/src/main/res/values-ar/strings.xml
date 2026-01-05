@@ -19,4 +19,17 @@
     <string name="p2_wins">فوز اللاعب 2!</string>
     <string name="ai_wins">فوز الكمبيوتر!</string>
     <string name="draw">تعادل!</string>
+    <string name="app_name">النقاط والمربعات</string>
+    <string name="operation_system">نظام العمليات</string>
+    <string name="classic">كلاسيكي</string>
+    <string name="hacker">هاكر</string>
+    <string name="emp_name">نبضة</string>
+    <string name="emp_hint">مسح</string>
+    <string name="hack_name">اختراق</string>
+    <string name="hack_hint">سرقة</string>
+    <string name="freeze_name">تجميد</string>
+    <string name="freeze_hint">قفل</string>
+    <string name="hacker_active">نظام الاختراق نشط</string>
+    <string name="classic_mode">النمط الكلاسيكي</string>
+    <string name="abort_game">إلغاء</string>
 </resources>

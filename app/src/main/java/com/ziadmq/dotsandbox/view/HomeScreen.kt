@@ -1,30 +1,20 @@
 package com.ziadmq.dotsandbox.view
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Computer
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,86 +28,173 @@ import com.ziadmq.dotsandbox.ui.theme.Player1Color
 @Composable
 fun HomeScreen(onShowInterstitial: () -> Unit, onStartGame: (Int, GameMode) -> Unit) {
     var selectedSize by remember { mutableStateOf(4) }
-    var selectedMode by remember { mutableStateOf(GameMode.PvE) }
+    var isHackerMode by remember { mutableStateOf(false) }
+    var isAgainstAi by remember { mutableStateOf(true) }
+
+    val selectedMode = when {
+        isHackerMode && isAgainstAi -> GameMode.HACKER_PvE
+        isHackerMode && !isAgainstAi -> GameMode.HACKER_PvP
+        !isHackerMode && isAgainstAi -> GameMode.PvE
+        else -> GameMode.PvP
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp).padding(bottom = 60.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_logo_neon),
                 contentDescription = "Logo",
                 modifier = Modifier.size(180.dp)
             )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    stringResource(R.string.app_name).uppercase(),
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
+                    letterSpacing = 2.sp
+                )
+                Text(
+                    stringResource(R.string.cyber_edition),
+                    fontSize = 12.sp,
+                    color = Player1Color,
+                    letterSpacing = 6.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(stringResource(R.string.app_name).uppercase(), fontSize = 36.sp, fontWeight = FontWeight.Black, color = Color.White)
-            Text(stringResource(R.string.cyber_edition), fontSize = 14.sp, color = Player1Color, letterSpacing = 8.sp)
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            GlassCard {
-                Text(stringResource(R.string.grid_size), color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            GlassCard(modifier = Modifier.fillMaxWidth()) {
+                // حجم الشبكة
+                SectionTitle(stringResource(R.string.grid_size))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     listOf(3, 4, 5).forEach { size ->
-                        SelectableButton(
+                        CyberToggleButton(
                             text = "${size}x${size}",
                             isSelected = selectedSize == size,
-                            onClick = { selectedSize = size }
-                        )
+                            modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
+                        ) { selectedSize = size }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(stringResource(R.string.opponent), color = Color.Gray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SelectableButton(stringResource(R.string.ai_bot), selectedMode == GameMode.PvE) { selectedMode = GameMode.PvE }
-                    SelectableButton(stringResource(R.string.human), selectedMode == GameMode.PvP) { selectedMode = GameMode.PvP }
+                Spacer(modifier = Modifier.height(10.dp))
+                // نمط اللعبة
+                SectionTitle(stringResource(R.string.opponent))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    CyberToggleButton(
+                        text = stringResource(R.string.classic),
+                        icon = Icons.Default.Terminal,
+                        isSelected = !isHackerMode,
+                        modifier = Modifier.weight(1f).padding(end = 4.dp)
+                    ) { isHackerMode = false }
+                    CyberToggleButton(
+                        text = stringResource(R.string.hacker),
+                        icon = Icons.Default.Terminal,
+                        isSelected = isHackerMode,
+                        modifier = Modifier.weight(1f).padding(start = 4.dp)
+                    ) { isHackerMode = true }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                // الخصم
+                SectionTitle(stringResource(R.string.opponent))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    CyberToggleButton(
+                        text = stringResource(R.string.ai_bot),
+                        icon = Icons.Default.Computer,
+                        isSelected = isAgainstAi,
+                        modifier = Modifier.weight(1f).padding(end = 4.dp)
+                    ) { isAgainstAi = true }
+                    CyberToggleButton(
+                        text = stringResource(R.string.human),
+                        icon = Icons.Default.Group,
+                        isSelected = !isAgainstAi,
+                        modifier = Modifier.weight(1f).padding(start = 4.dp)
+                    ) { isAgainstAi = false }
                 }
             }
 
-            Spacer(modifier = Modifier.height(48.dp))
-
+            // زر البداية
             Button(
                 onClick = {
                     onShowInterstitial()
                     onStartGame(selectedSize, selectedMode)
                 },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Player1Color),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(12.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
             ) {
-                Text(stringResource(R.string.start_game), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                Text(
+                    stringResource(R.string.start_game).uppercase(),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.Black
+                )
             }
         }
 
-        AdBanner(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp)
-        )
+
+        AdBanner(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp))
     }
 }
 @Composable
-fun SelectableButton(text: String, isSelected: Boolean, onClick: () -> Unit) {
-    val bgColor = if (isSelected) Player1Color else Color.Transparent
-    val border = if (isSelected) null else androidx.compose.foundation.BorderStroke(1.dp, Color.Gray)
-    val textColor = if (isSelected) Color.Black else Color.White
+fun SectionTitle(text: String) {
+    Text(
+        text = text.uppercase(),
+        color = Color.White.copy(alpha = 0.5f),
+        fontSize = 10.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(bottom = 12.dp)
+    )
+}
+
+@Composable
+fun CyberToggleButton(
+    text: String,
+    isSelected: Boolean,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    onClick: () -> Unit
+) {
+    val alpha by animateFloatAsState(if (isSelected) 1f else 0.3f, label = "alpha")
+    val scale by animateFloatAsState(if (isSelected) 1.05f else 1f, label = "scale")
 
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        color = bgColor,
-        border = border,
-        modifier = Modifier.height(45.dp).width(100.dp)
+        shape = RoundedCornerShape(8.dp),
+        color = if (isSelected) Player1Color.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.05f),
+        modifier = modifier.height(48.dp).border(
+            width = 1.dp,
+            color = if (isSelected) Player1Color else Color.White.copy(alpha = 0.1f),
+            shape = RoundedCornerShape(8.dp)
+        )
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(text, color = textColor, fontWeight = FontWeight.Bold)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = 4.dp)
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = if (isSelected) Player1Color else Color.Gray
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+            }
+            Text(
+                text = text,
+                color = if (isSelected) Player1Color else Color.Gray,
+                fontSize = 13.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+            )
         }
     }
 }
