@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">dots and box</string>
+    <string name="app_name" translatable="false">Dots &amp; Boxes</string>
+    <string name="loading">LOADING...</string>
+    <string name="cyber_edition">CYBER EDITION</string>
+    <string name="grid_size">GRID SIZE</string>
+    <string name="opponent">OPPONENT</string>
+    <string name="ai_bot">AI BOT</string>
+    <string name="human">HUMAN</string>
+    <string name="start_game">START GAME</string>
+    <string name="exit_button">← EXIT</string>
+    <string name="vs_text">VS</string>
+    <string name="player_1">P1</string>
+    <string name="player_2">P2</string>
+    <string name="ai_label">AI</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="replay">REPLAY</string>
+    <string name="menu">MENU</string>
+    <string name="p1_wins">PLAYER 1 WINS!</string>
+    <string name="p2_wins">PLAYER 2 WINS!</string>
+    <string name="ai_wins">AI WINS!</string>
+    <string name="draw">DRAW!</string>
 </resources>

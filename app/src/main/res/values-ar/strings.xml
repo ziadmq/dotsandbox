@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading">جاري التحميل...</string>
+    <string name="cyber_edition">النسخة السيبرانية</string>
+    <string name="grid_size">حجم اللوحة</string>
+    <string name="opponent">المنافس</string>
+    <string name="ai_bot">ذكاء اصطناعي</string>
+    <string name="human">لاعب آخر</string>
+    <string name="start_game">ابدأ اللعبة</string>
+    <string name="exit_button">خروج</string>
+    <string name="vs_text">ضد</string>
+    <string name="player_1">لاعب  1</string>
+    <string name="player_2">لاعب2</string>
+    <string name="ai_label">كمبيوتر</string>
+    <string name="game_over">انتهت اللعبة</string>
+    <string name="replay">العب مجدداً</string>
+    <string name="menu">القائمة</string>
+    <string name="p1_wins">فوز اللاعب 1!</string>
+    <string name="p2_wins">فوز اللاعب 2!</string>
+    <string name="ai_wins">فوز الكمبيوتر!</string>
+    <string name="draw">تعادل!</string>
+</resources>
