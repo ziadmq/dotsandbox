@@ -44,14 +44,14 @@ fun HomeScreen(onShowInterstitial: () -> Unit, onStartGame: (Int, GameMode) -> U
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_logo_neon),
                 contentDescription = "Logo",
                 modifier = Modifier.size(180.dp)
             )
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally)   {
                 Text(
                     stringResource(R.string.app_name).uppercase(),
                     fontSize = 32.sp,
@@ -140,7 +140,6 @@ fun HomeScreen(onShowInterstitial: () -> Unit, onStartGame: (Int, GameMode) -> U
         }
 
 
-        AdBanner(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp))
     }
 }
 @Composable
