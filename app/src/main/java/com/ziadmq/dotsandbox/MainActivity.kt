@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.ziadmq.dotsandbox.ui.theme.*
-import com.google.android.gms.ads.*
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.huawei.hms.ads.*
+import com.huawei.hms.ads.banner.BannerView
+import com.huawei.hms.ads.interstitial.InterstitialAd
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ziadmq.dotsandbox.view.MainApp
 
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MobileAds.initialize(this) {}
+        HwAds.init(this)
         loadInterstitial()
 
         setContent {
@@ -43,25 +43,18 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun loadInterstitial() {
-        val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(
-            this, "ca-app-pub-2172903105244124/6242743555", adRequest,
-            object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    mInterstitialAd = interstitialAd
-                }
-
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    mInterstitialAd = null
-                }
-            })
+        mInterstitialAd = InterstitialAd(this)
+        // ملاحظة: ضع الـ Unit ID الخاص بالإعلان البيني هنا (Interstitial)
+        mInterstitialAd?.adId = "YOUR_INTERSTITIAL_ID"
+        val adParam = AdParam.Builder().build()
+        mInterstitialAd?.loadAd(adParam)
     }
 
     private fun showInterstitial() {
-        mInterstitialAd?.let {
-            it.show(this)
-            loadInterstitial() // Reload for next time
-        } ?: run {
+        if (mInterstitialAd != null && mInterstitialAd!!.isLoaded) {
+            mInterstitialAd?.show(this)
+            loadInterstitial()
+        } else {
             loadInterstitial()
         }
     }
@@ -72,10 +65,11 @@ fun AdBanner(modifier: Modifier = Modifier) {
     AndroidView(
         modifier = modifier.fillMaxWidth(),
         factory = { context ->
-            AdView(context).apply {
-                setAdSize(AdSize.BANNER)
-                adUnitId = "ca-app-pub-2172903105244124/3371848266"
-                loadAd(AdRequest.Builder().build())
+            BannerView(context).apply {
+                // معرف البنر من الصورة التي أرسلتها
+                adId = "s3kqgbuk9q"
+                bannerAdSize = BannerAdSize.BANNER_SIZE_320_50
+                loadAd(AdParam.Builder().build())
             }
         }
     )

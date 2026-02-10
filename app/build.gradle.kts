@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.huawei.agconnect")
 }
 
 android {
@@ -41,7 +42,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.google.play.services.ads)
+    implementation("com.huawei.hms:ads-lite:13.4.71.300")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
