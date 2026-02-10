@@ -1,4 +1,4 @@
-package com.ziadmq.dotsandbox.view
+package com.ziadmq.dotsandboxes.view
 
 import android.media.MediaPlayer
 import androidx.compose.animation.Crossfade
@@ -9,9 +9,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ziadmq.dotsandbox.model.SoundType
-import com.ziadmq.dotsandbox.viewmodel.AppScreen
-import com.ziadmq.dotsandbox.viewmodel.GameViewModel
+import com.ziadmq.dotsandboxes.model.SoundType
+import com.ziadmq.dotsandboxes.viewmodel.AppScreen
+import com.ziadmq.dotsandboxes.viewmodel.GameViewModel
 
 @Composable
 fun MainApp(viewModel: GameViewModel = viewModel(), onShowInterstitial: () -> Unit) {

@@ -1,4 +1,4 @@
-package com.ziadmq.dotsandbox
+package com.ziadmq.dotsandboxes
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.ziadmq.dotsandbox.ui.theme
+package com.ziadmq.dotsandboxes.ui.theme
 
 import android.app.Activity
 import android.os.Build

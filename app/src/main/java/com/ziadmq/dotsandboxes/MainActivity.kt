@@ -1,20 +1,16 @@
-package com.ziadmq.dotsandbox
+package com.ziadmq.dotsandboxes
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import com.ziadmq.dotsandbox.ui.theme.*
+import com.ziadmq.dotsandboxes.ui.theme.*
 import com.huawei.hms.ads.*
-import com.huawei.hms.ads.banner.BannerView
-import com.huawei.hms.ads.interstitial.InterstitialAd
-import androidx.compose.ui.viewinterop.AndroidView
-import com.ziadmq.dotsandbox.view.MainApp
+import com.ziadmq.dotsandboxes.view.MainApp
 
 class MainActivity : ComponentActivity() {
 
@@ -22,6 +18,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. تهيئة إعلانات هواوي
         HwAds.init(this)
         loadInterstitial()
 
@@ -44,8 +42,8 @@ class MainActivity : ComponentActivity() {
 
     private fun loadInterstitial() {
         mInterstitialAd = InterstitialAd(this)
-        // ملاحظة: ضع الـ Unit ID الخاص بالإعلان البيني هنا (Interstitial)
-        mInterstitialAd?.adId = "YOUR_INTERSTITIAL_ID"
+        // 2. وضع معرف الإعلان الصحيح الذي استخرجته
+        mInterstitialAd?.adId = "s3kqgbuk9q"
         val adParam = AdParam.Builder().build()
         mInterstitialAd?.loadAd(adParam)
     }
@@ -60,19 +58,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun AdBanner(modifier: Modifier = Modifier) {
-    AndroidView(
-        modifier = modifier.fillMaxWidth(),
-        factory = { context ->
-            BannerView(context).apply {
-                // معرف البنر من الصورة التي أرسلتها
-                adId = "s3kqgbuk9q"
-                bannerAdSize = BannerAdSize.BANNER_SIZE_320_50
-                loadAd(AdParam.Builder().build())
-            }
-        }
-    )
-}
-
-
+// ملاحظة: قمنا بحذف AdBanner لأن المعرف s3kqgbuk9q هو لإعلان ملء شاشة وليس بنر

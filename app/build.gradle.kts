@@ -2,19 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.huawei.agconnect")
 }
 
 android {
-    namespace = "com.ziadmq.dotsandbox"
+    namespace = "com.ziadmq.dotsandboxes"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.ziadmq.dotsandbox"
+        applicationId = "com.ziadmq.dotsandboxes"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.5"
+        versionCode = 3
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -60,3 +59,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+apply(plugin = "com.huawei.agconnect")

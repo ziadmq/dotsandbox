@@ -1,4 +1,4 @@
-package com.ziadmq.dotsandbox.view
+package com.ziadmq.dotsandboxes.view
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -26,21 +26,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ziadmq.dotsandbox.AdBanner
-import com.ziadmq.dotsandbox.R
-import com.ziadmq.dotsandbox.model.GameMode
-import com.ziadmq.dotsandbox.model.Player
-import com.ziadmq.dotsandbox.model.PowerUpType
-import com.ziadmq.dotsandbox.ui.theme.Player1Color
-import com.ziadmq.dotsandbox.ui.theme.Player2Color
-import com.ziadmq.dotsandbox.viewmodel.DotsAndBoxesBoard
-import com.ziadmq.dotsandbox.viewmodel.GameViewModel
+import com.ziadmq.dotsandboxes.model.GameMode
+import com.ziadmq.dotsandboxes.model.Player
+import com.ziadmq.dotsandboxes.model.PowerUpType
+import com.ziadmq.dotsandboxes.ui.theme.Player1Color
+import com.ziadmq.dotsandboxes.ui.theme.Player2Color
+import com.ziadmq.dotsandboxes.viewmodel.DotsAndBoxesBoard
+import com.ziadmq.dotsandboxes.viewmodel.GameViewModel
+import com.ziadmq.dotsandboxes.R
 
 @Composable
 fun GameScreen(viewModel: GameViewModel, onShowInterstitial: () -> Unit, onQuit: () -> Unit) {
@@ -118,9 +116,6 @@ fun GameScreen(viewModel: GameViewModel, onShowInterstitial: () -> Unit, onQuit:
             Spacer(modifier = Modifier.height(60.dp))
         }
 
-        AdBanner(modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .padding(bottom = 8.dp))
     }
 
     if (isGameFinished) {

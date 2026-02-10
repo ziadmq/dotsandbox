@@ -1,4 +1,4 @@
-package com.ziadmq.dotsandbox.view
+package com.ziadmq.dotsandboxes.view
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -17,9 +17,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ziadmq.dotsandbox.R
-import com.ziadmq.dotsandbox.ui.theme.Player1Color
+import com.ziadmq.dotsandboxes.ui.theme.Player1Color
 import kotlinx.coroutines.delay
+import com.ziadmq.dotsandboxes.R
+
 
 
 @Composable

@@ -1,4 +1,4 @@
-package com.ziadmq.dotsandbox.ui.theme
+package com.ziadmq.dotsandboxes.ui.theme
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color

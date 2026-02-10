@@ -1,4 +1,4 @@
-package com.ziadmq.dotsandbox.model
+package com.ziadmq.dotsandboxes.model
 
 data class Line(
     val row: Int,

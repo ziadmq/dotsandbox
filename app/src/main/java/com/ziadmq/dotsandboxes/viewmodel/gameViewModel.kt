@@ -1,8 +1,8 @@
-package com.ziadmq.dotsandbox.viewmodel
+package com.ziadmq.dotsandboxes.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ziadmq.dotsandbox.model.*
+import com.ziadmq.dotsandboxes.model.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
